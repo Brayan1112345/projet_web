@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Connexion {% endblock %}
+
+{% block extra_css_js %}
+<style>
+    /* CSS */
+    /* Import Google font - Poppins */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+    /* body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        } */
+    
+    h1 {
+        margin: 20px 0;
+        margin-bottom: 2.5rem;
+        text-align: center;
+        size: 18px;
+    }
+
+    header{
+        left: 0;
+    }
+
+    .container_connexion {
+        width: 50%;
+        height: 15%;
+        background: linear-gradient(to right, #f8f9fa, #e9ecef);
+        border-radius: 7px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        margin-top: 2%;
+        margin-left: 25%;
+    }
+
+    .form {
+        padding: 8%;
+    }
+
+    label {
+        padding: 10px 0;
+        color: black;
+        cursor: pointer;
+        size: 2em;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        font-size: 17px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        outline: none;
+        margin-bottom: 15px;
+        margin-top: 10px;
+    }
+
+    button {
+        color: #fff;
+        background: #FFD700;
+        width: 100%;
+        padding: 10px;
+        font-size: 1.3em;
+        margin-top: 1.5rem;
+        border: none;
+        border-radius: 6px;
+        outline: none;
+    }
+
+    button:hover {
+        background: #FFD700;
+    }
+
+    .link {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .error {
+        background-color: red;
+        color: #fff;
+        border-radius: 6px;
+        padding: 10px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container_connexion ">
+    <div class="form">
+        <h1> <span> Connectez-vous </span></h1>
+        {% if messages %}
+        <div class="error-messages">
+            {% for message in messages %}
+            <p class="error">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'Users_app:connexion' %}">
+            {% csrf_token %}
+            <div class="input-icon">
+                <i class="fas fa-user"></i>
+                <label for="username">Nom d'utilisateur</label>
+            </div>
+            <input type="text" name="username" required>
+            <div class="input-icon">
+                <i class="fas fa-lock"></i>
+                <label for="password">Mot de passe</label>
+            </div>
+            <input type="password" name="password" required>
+            <button type="submit">Se connecter</button>
+        </form>
+        <p class="link">Pas encore inscrit ? <a href="{% url 'Users_app:inscription' %}">S'inscrire</a></p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %} 
+{% endblock %}

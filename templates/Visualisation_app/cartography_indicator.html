@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Cartographie des indicateurs {% endblock %}
+
+{% block extra_css_js %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/main_visualisation_cartography.css' %}">
+<style>
+    .main-content {
+        min-height: 70vh;
+        padding: 80px 2% 2% 2%; 
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="container_cartography">
+        <div class="filters">
+            <div class="form-group">
+                <label for="indicator">Indicateur :</label>
+                <select id="indicator" class="select2">
+                    <option value="">Sélectionnez un indicateur</option>
+                    {% for indicator in indicators %}
+                        <option value="{{ indicator.id }}">{{ indicator.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="countries">Pays :</label>
+                <select id="countries" class="select2" multiple>
+                    {% for country in countries %}
+                        
+                        <option value="{{ country.ID_Country }}">{{ country.Countryname }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="year">Année :</label>
+                <input type="number" id="year" value="{{ default_year }}" min="1960" max="2020" class="form-control">
+            </div>
+        </div>
+        
+        <div class="visualization">
+            <div id="welcome-message" class="welcome-message">
+                <h2>Cartographie des indicateurs économiques africains</h2>
+                <p>Cet outil permet de visualiser la répartition géographique d'un indicateur économique en Afrique pour une année donnée.</p>
+                <p>Pour commencer :</p>
+                <ul>
+                    <li>Sélectionnez un indicateur à visualiser</li>
+                    <li>Choisissez un ou plusieurs pays africains</li>
+                    <li>Ajustez l'année si nécessaire</li>
+                </ul>
+                <p>La carte se mettra à jour automatiquement dès que vous aurez fait vos sélections.</p>
+            </div>
+            <div id="indicator-description" style="display: none;"></div>
+            <div id="plotly-map" style="display: none;"></div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block extra_js %} 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Récupère l'année en cours
+        const currentYear = new Date().getFullYear();
+
+        // Sélectionne les inputs pour l'année 
+        const YearInput = document.getElementById('year');
+
+        // Met à jour l'attribut max de chaque input avec l'année en cours
+        YearInput.setAttribute('max', currentYear);
+    });
+
+    $(document).ready(function() {
+    $('.select2').select2({
+        language: {
+            noResults: function() {
+                return "Aucun résultat trouvé";
+            }
+        }
+    });
+
+    const GET_MAP_DATA_URL = "{% url 'Visualisation_app:get_map_data' %}";
+    
+    // Définition des pays d'Afrique centrale (codes ISO-3)
+    const centralAfricanCountries = ['CMR', 'CAF', 'TCD', 'COG', 'COD', 'GNQ', 'GAB', 'STP', 'AGO', 'RWA','BDI'];
+
+    function updateMap() {
+        const indicator = $('#indicator').val();
+        const countries = $('#countries').val();
+        const year = $('#year').val();
+        
+        if (!indicator || !countries || countries.length === 0) {
+            $('#welcome-message').show();
+            $('#plotly-map').hide();
+            $('#indicator-description').hide();
+            return;
+        }
+        
+        $.get(GET_MAP_DATA_URL, {
+            indicator: indicator,
+            countries: countries,
+            year: year
+        }, function(response) {
+            if (response.error) {
+                alert(response.error);
+                return;
+            }
+
+            // Création d'un ensemble de données pour tous les pays d'Afrique centrale
+            const allData = {};
+            centralAfricanCountries.forEach(country => {
+                // Si le pays n'est pas dans les données, on met une valeur null
+                allData[country] = response.data[country] || {
+                    value: null,
+                    name: country
+                };
+            });
+            
+            const data = [{
+                type: 'choropleth',
+                locationmode: 'ISO-3',
+                locations: centralAfricanCountries,
+                z: centralAfricanCountries.map(country => 
+                    allData[country].value !== null ? allData[country].value : 'null'
+                ),
+                text: centralAfricanCountries.map(country =>
+                    allData[country].value !== null 
+                        ? `${allData[country].name}<br>${response.indicator_name}: ${allData[country].value}`
+                        : `${country}<br>Données non disponibles`
+                ),
+                colorscale: [
+                    [0, 'rgb(240, 240, 255)'],
+                    [1, 'rgb(0, 0, 150)']
+                ],
+                colorbar: {
+                    title: response.indicator_name,
+                    thickness: 20
+                },
+                name: '',
+                showscale: true,
+                // Gestion des valeurs manquantes
+                zmin: Math.min(...Object.values(response.data).map(d => d.value)),
+                zmax: Math.max(...Object.values(response.data).map(d => d.value))
+            }];
+
+            const layout = {
+                title: `${response.indicator_name} en ${year}`,
+                geo: {
+                    scope: 'africa',
+                    showframe: false,
+                    showcoastlines: true,
+                    projection: {
+                        type: 'mercator'
+                    },
+                    // Limites précises pour l'Afrique centrale
+                    lonaxis: {
+                        range: [5, 30],  
+                        showgrid: false
+                    },
+                    lataxis: {
+                        range: [-15, 30], // Latitude ajustée
+                        showgrid: false
+                    },
+                    center: {
+                        lon: 20,
+                        lat: 0
+                    },
+                    // Désactivation du déplacement de la carte
+                    dragmode: false,
+                    // Masquage des pays hors Afrique centrale
+                    visible: false,
+                    // Style des pays non sélectionnés
+                    countrycolor: 'rgb(200, 200, 200)',
+                    showland: true,
+                    landcolor: 'rgb(240, 240, 240)',
+                    showcountries: true
+                },
+                bgcolor: "lightgreen",
+                margin: {
+                    l: 0,
+                    r: 0,
+                    b: 0,
+                    t: 30,
+                    pad: 4
+                },
+                paper_bgcolor: 'rgb(230, 255, 230)',
+                plot_bgcolor: 'lightgreen'
+            };
+
+            const config = {
+                responsive: true,
+                displayModeBar: false,  // Cache la barre d'outils
+                scrollZoom: false,      // Désactive le zoom
+                dragmode: false         // Désactive le déplacement
+            };
+            
+            $('#indicator-description').html(response.description).show();
+            $('#welcome-message').hide();
+            $('#plotly-map').show();
+            
+            Plotly.newPlot('plotly-map', data, layout, config);
+        });
+    }
+
+    // Événements pour la mise à jour automatique
+    $('#indicator, #countries, #year').on('change', updateMap);
+});
+</script>
+{% endblock %}

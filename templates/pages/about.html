@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} A propos {% endblock %}
+
+{% block extra_css_js %}
+<style> 
+    .container1 {
+        width: 100%;
+        max-width: 80%; 
+        padding: 20px; /* Espacement intérieur */
+        border-radius: 8px; /* Coins arrondis */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère autour du formulaire */
+        border: 1px solid #ddd; /* Bordure claire autour du formulaire */
+        margin: 20px auto; /* Centrage horizontal */
+        flex-wrap: wrap;
+        display: flex;
+        justify-content: space-between; 
+    }
+
+    .pays {
+        margin: 10px; 
+        background-color: white; 
+        padding: 15px; 
+        border-radius: 5px; 
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        width: calc(50% - 20px); 
+        max-width: 400px; 
+    }
+
+    .drapeau {
+        width: 50px; 
+        height: auto; 
+        margin-top: 10px; 
+    }
+
+    h1 {
+        color: black; 
+        font-size: 2.5em;
+        font-style: bold;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 2%;
+    }
+
+    .presentation {
+        color: black; 
+        font-size: 1.5em;
+        text-align: center;
+        margin-bottom: 4%;
+    }
+
+    h2 {
+        color: #291dcf;
+        text-align: center;
+    }
+
+    h3 {
+        color: #291dcf;
+        margin-bottom: 4%; 
+        padding-right: 10px; 
+    }
+
+    .about {
+        text-align: justify; 
+        line-height: 1.5; 
+        color: #0d0d0d;
+        font-style: normal; 
+        font-size: 18px;
+    }
+
+
+    table {
+        width: 100%;
+        max-width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        overflow-x: auto;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: justify;
+        color: #0d0d0d;
+    }
+    td:first-child {
+        font-weight: bold; 
+        color: blue; 
+        font-style: normal;
+    }
+    th {
+        background-color: #4CAF50;
+        color: white;
+        text-align: center; 
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    td:nth-child(2) {
+        font-weight: bold; 
+        font-style: normal;
+    }
+    td:nth-child(3) {
+        font-style: normal;
+    }
+    td:nth-child(4) {
+        font-style: italic;
+    }
+    tr:hover {
+        background-color: #ddd;
+    }
+
+    @media (max-width: 768px) {
+        .pays {
+            width: 100%; 
+            align-items: center; 
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1> Présentation du site web STYMO-AW </h1>
+<p class="presentation"> Une plateforme dédiée à la gestion et à l'analyse des indicateurs économiques pour les pays d'Afrique centrale.</p>
+<h2>1. Objectif de l'application</h2>    
+<div class="container1">
+
+    <p class="about"><b>Fournir des outils d'analyse économique pour aider les utilisateurs à prendre des décisions éclairées sur le développement économique en Afrique centrale.</b> </p>
+    </div>
+
+    <h2>2. Les 11 pays d'Afrique Centrale </h2>
+    <div class="container1">
+
+        <div class="pays">
+            <h3>Angola</h3>
+            <p class="about"><b>Capitale :</b> Luanda</p>
+            <p class="about"><b>Langues officielles :</b> Portugais</p>
+            <p class="about"><b>Monnaie :</b> Kwanza</p>
+            
+            <img src="{% static 'img/Angola.png' %}" alt="Angola" class="drapeau">
+        </div>
+
+        <div class="pays">
+            <h3>Burundi</h3>
+            <p class="about"><b>Capitale :</b> Gitega</p>
+            <p class="about"><b>Langues officielles :</b> Anglais, Français, Kirundi</p>
+            <p class="about"><b>Monnaie :</b> Franc Burundais</p>
+            
+            <img src="{% static 'img/Burundi.png' %}" alt="Burundi" class="drapeau">
+        </div>
+        
+        <div class="pays">
+            <h3>Cameroun</h3>
+            <p class="about"><b>Capitale :</b> Yaoundé</p>
+            <p class="about"><b>Langues officielles :</b> Anglais, Français</p>
+            <p class="about"><b>Monnaie :</b> Franc CFA</p>
+            
+            <img src="{% static 'img/Cameroun.png' %}" alt="Cameroun" class="drapeau">
+        </div>
+
+        <div class="pays">
+            <h3>République du Congo</h3>
+            <p class="about"><b>Capitale :</b> Brazzaville</p>
+            <p class="about"><b>Langue officielle :</b> Français</p>
+            <p class="about"><b>Monnaie :</b> Franc CFA</p>
+            <img  src="{% static 'img/Congo.png' %}" alt="Congo" class="drapeau">
+        </div>
+
+        <div class="pays">
+            <h3>Gabon</h3>
+            <p class="about"><b>Capitale :</b> Libreville</p>
+            <p class="about"><b>Langue officielle :</b> Français</p>
+            <p class="about"><b>Monnaie :</b> Franc CFA</p>
+            <img src="{% static 'img/Gabon.png' %}" alt="Gabon" class="drapeau">
+        </div>
+
+        <div class="pays">
+            <h3>Guinée Équatoriale</h3>
+            <p class="about"><b>Capitale :</b> Malabo</p>
+            <p class="about"><b>Langues officielles :</b> Espagnol, Français, Portugais</p>
+            <p class="about"><b>Monnaie :</b> Franc CFA</p>
+            <img src="{% static 'img/Guinée.png' %}" alt="Guinée" class="drapeau">
+        </div>
+
+        <div class="pays">
+            <h3>République Centrafricaine</h3>
+            <p class="about"><b>Capitale :</b> Bangui</p>
+            <p class="about"><b>Langues officielles :</b> Français, Sango</p>
+            <p class="about"><b>Monnaie :</b> Franc CFA</p>
+            <img src="{% static 'img/RCA.png' %}" alt="RCA" class="drapeau">
+        </div>
+
+        <div class="pays">
+            <h3>République Démocratique du Congo</h3>
+            <p class="about"><b>Capitale :</b> Kinshasa</p>
+            <p class="about"><b>Langue officielle :</b> Français</p>
+            <p class="about"><b>Monnaie :</b> Franc congolais</p>
+            <img src="{% static 'img/RDC.png' %}" alt="RDC" class="drapeau">
+        </div>
+
+        <div class="pays">
+            <h3>République du Rwanda</h3>
+            <p class="about"><b>Capitale :</b> </p>
+            <p class="about"><b>Langue officielle :</b> Anglais, Français, Kinyarwanda et Swahili </p>
+            <p class="about"><b>Monnaie :</b> Franc rwandais</p>
+            <img src="{% static 'img/Rwanda.png' %}" alt="Rwanda" class="drapeau">
+        </div>
+
+        <div class="pays">
+            <h3>São Tomé-et-Principe</h3>
+            <p class="about"><b>Capitale :</b> São Tomé</p>
+            <p class="about"><b>Langue officielle :</b> Portugais</p>
+            <p class="about"><b>Monnaie :</b> Dobra</p>
+            <img src="{% static 'img/Sao.png' %}" alt="Sao" class="drapeau">
+        </div>
+
+        <div class="pays">
+            <h3>Tchad</h3>
+            <p class="about"><b>Capitale :</b> Ndjamena</p>
+            <p class="about"><b>Langues officielles :</b> Français, Arabe</p>
+            <p class="about"><b>Monnaie :</b> Franc CFA</p>
+            <img src="{% static 'img/Tchad.png' %}" alt="Tchad" class="drapeau">
+        </div>
+
+    </div>
+
+    <h2>3. Fonctionnalités de l'application</h2>
+    <div class="container1">
+        <p class="about">L'application donne la possibilité à l'utilisateur de :<br>
+        </p>
+
+        <p class="about">
+            <ul class="about">
+                <li><i>Visualiser les données enregistrées par les administrateurs à travers notre application ;</i></li>
+                <li><i>Exporter les données disponibles selon les préférences ;</i></li>
+                <li><i>Générer et télécharger des rapports personnalisés par les utilisateurs ;</i></li>
+                <li><i>Exporter les données disponibles selon les préférences.</i></li>
+            </ul>
+        </p>
+    </div>
+
+    <h2>4. Équipe et expertise</h2>
+    <div class="container1">
+        <p class="about">Cette application a été développée par une équipe dynamique constituée de cinq (05) étudiants de 
+            L’Institut Sous-régional de Statistique et d’Economie Appliquée (ISSEA). Réalisée dans le cadre d'un 
+            cours de programmation web, ce qui nous a permis d'appliquer des concepts théoriques à un cas concret, 
+            renforçant ainsi notre expérience pratique et notre capacité à travailler ensemble en équipe.<br>
+        </p>
+
+        <p class="about">
+            Pour en savoir plus sur l'ISSEA et ses programmes, vous pouvez visiter le 
+            <i><a href="https://issea-cemac.org/issea/fr/presentation" target="_blank">site officiel de l'ISSEA</a></i>
+        </p>
+    </div>
+    
+  
+    <h2>5. Informations de contact</h2>
+    <div class="container1">
+        <p class="about">Pour toute question ou demande d'information, n'hésitez pas à nous contacter via notre page de contact.</p>
+        <p class="about"><i><a href="{% url 'pages:contact' %}">Visitez notre page de contact</a></i> pour plus d'informations.</p>
+    </div>
+{% endblock %}
+
+{% block extra_js %} 
+{% endblock %}

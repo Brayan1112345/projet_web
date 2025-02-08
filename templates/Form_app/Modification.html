@@ -1,0 +1,326 @@
+{% extends 'base.html'%}
+
+{% block title %} Saisie des Indicateurs Économiques  {% endblock %}
+
+{% load static %}
+
+{% block extra_js %}  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="
+            {% if message.tags == 'error' %}alert
+            {% elif message.tags == 'success' %}alert1
+            {% elif message.tags == 'info' %}alert2
+            {% endif %}">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>  
+            <strong>{{ message }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+<div class="form-container">
+    <!-- Titre "Ajouter un Indicateur Économique" dans un cadre séparé -->
+    <div class="header-container">
+        <h1>Modification des indicateurs d'un pays</h1>
+    </div>
+
+    <!-- Formulaire 1 -->
+    <div class="container1">
+        <form method="POST" action="{% url 'Form_app:Modify_Indicator1' %}" id="form1">
+            {% csrf_token %}
+            {{ form1.as_p }}
+            <button type="submit" id="valider1">Valider</button>
+        </form>
+    </div>
+
+    <!-- Formulaire 2 (caché par défaut) -->
+    {% if show_step2 %}
+        <div class="container1">
+            <form method="POST" action="{% url 'Form_app:Modify_Indicator2' %}" id="form2" style="display: {% if show_step2 %} block {% else %} none {% endif %};">
+                {% csrf_token %}
+
+                <!-- Indicateurs Economiques -->
+                <div class="form-section">
+                    <h3>Indicateurs Economiques</h3>
+                    <div class="form-group">
+                        <label for="{{ form2.GDP.id_for_label }}">{{ form2.GDP.label }}</label>
+                        {{ form2.GDP }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form2.GDP_growth.id_for_label }}">{{ form2.GDP_growth.label }}</label>
+                        {{ form2.GDP_growth }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form2.GDP_per_capita.id_for_label }}">{{ form2.GDP_per_capita.label }}</label>
+                        {{ form2.GDP_per_capita }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form2.Balance_com.id_for_label }}">{{ form2.Balance_com.label }}</label>
+                        {{ form2.Balance_com }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form2.IDE.id_for_label }}">{{ form2.IDE.label }}</label>
+                        {{ form2.IDE }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form2.Inflation_Rate.id_for_label }}">{{ form2.Inflation_Rate.label }}</label>
+                        {{ form2.Inflation_Rate }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form2.GNI.id_for_label }}">{{ form2.GNI.label }}</label>
+                        {{ form2.GNI }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form2.GNI_per_capita.id_for_label }}">{{ form2.GNI_per_capita.label }}</label>
+                        {{ form2.GNI_per_capita }}
+                    </div>
+                </div>
+
+                <!-- Indicateurs Démographiques -->
+                <div class="form-section">
+                    <h3>Indicateurs Démographiques</h3>
+                    <div class="form-group">
+                        <label for="{{ form2.Population.id_for_label }}">{{ form2.Population.label }}</label>
+                        {{ form2.Population }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form2.Population_growth.id_for_label }}">{{ form2.Population_growth.label }}</label>
+                        {{ form2.Population_growth }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form2.Life_exp.id_for_label }}">{{ form2.Life_exp.label }}</label>
+                        {{ form2.Life_exp }}
+                    </div>
+                </div>
+
+                <!-- Indicateurs sociaux -->
+                <div class="form-section">
+                    <h3>Indicateurs sociaux</h3>
+                    <div class="form-group">
+                        <label for="{{ form2.Maternal_mortality_ratio.id_for_label }}">{{ form2.Maternal_mortality_ratio.label }}</label>
+                        {{ form2.Maternal_mortality_ratio }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form2.Mortality_rate_infant.id_for_label }}">{{ form2.Mortality_rate_infant.label }}</label>
+                        {{ form2.Mortality_rate_infant }}
+                    </div>
+                </div>
+
+                <button type="submit" id="valider2">Modifier les données</button>
+            </form>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css_js %} 
+<style>
+        /* CSS */
+    .form-container {
+        background-color: #ffffff; /* Fond doux */
+        margin: 0;
+        padding: 0;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        height: auto;
+        flex-direction: column; /* Disposer les éléments verticalement */
+    }
+
+    .container1 {
+        width: 100%;
+        max-width: 65%; 
+        background: linear-gradient(to right, #f8f9fa, #e9ecef);
+        padding: 20px; /* Espacement intérieur */
+        border-radius: 8px; /* Coins arrondis */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère autour du formulaire */
+        border: 1px solid #ddd; /* Bordure claire autour du formulaire */
+        margin-bottom: 20px; /* Espacement sous le formulaire */
+    }
+
+    /* Conteneur principal pour le titre */
+    .header-container {
+        width: 100%;
+        max-width: 55%; /* Limiter la largeur maximale du titre */
+        background-color: #f3c250; 
+        color: #050404; /* Couleur du texte */
+        padding: 2%;
+        text-align: center;
+        border-radius: 8px; /* Coins arrondis */
+        margin: 1%;
+        font-style: italic; /* Mettre le texte en italique */
+    }
+
+    h1 {
+        text-align: center;
+        color: #333; /* Couleur du texte */
+        font-size: 24px;
+        margin: 0;
+    }
+
+    /* Style de l'en-tête de chaque section */
+    h2 {
+        font-size: 20px;
+        color: #444;
+        margin-bottom: 15px;
+    }
+
+    /* Style des sections du formulaire */
+    section {
+        margin-bottom: 25px;
+    }
+
+    /* Style pour les champs du formulaire (input, select, textarea) */
+    input, select, textarea {
+        width: 100%; /* Prendre toute la largeur disponible */
+        padding: 12px; /* Espacement intérieur */
+        font-size: 16px; /* Taille de police plus grande */
+        border: 1px solid #ccc; /* Bordure claire */
+        border-radius: 5px; /* Coins arrondis */
+        margin-bottom: 15px; /* Espacement entre les champs */
+        box-sizing: border-box; /* Inclure le padding dans la largeur totale */
+    }
+
+    /* Style pour les labels des champs*/
+    label {
+        font-weight: bold; /* Mettre les labels en gras */
+        display: block; /* S'assurer que le label est sur une nouvelle ligne */
+        margin-bottom: 5px; /* Espacement entre le label et le champ */
+    }
+
+    /* Style pour les boutons */
+    button {
+        width: 100%; /* Le bouton prend toute la largeur disponible */
+        padding: 12px;
+        background-color: #16c3bd; /* Couleur verte pour le bouton */
+        color: white; /* Texte blanc */
+        font-size: 16px;
+        border: none;
+        border-radius: 5px; /* Coins arrondis */
+        cursor: pointer;
+        transition: background-color 0.3s ease; /* Animation au survol */
+    }
+
+    /* Changer la couleur du bouton au survol */
+    button:hover {
+        background-color: #45a049;
+    }
+
+    /* Style des alertes ou des messages */
+    .alert {
+        padding: 20px;
+        background-color: #f44336; 
+        color: white;
+        opacity: 1;
+        transition: opacity 0.6s;
+        margin-bottom: 15px;
+    }
+
+    .alert1 {
+        padding: 20px;
+        background-color: #04AA6D; /* Couleur pour le succès */
+        color: white;
+        opacity: 1;
+        margin-bottom: 15px;
+        transition: opacity 0.6s;
+    }
+
+    .alert2 {
+        padding: 20px;
+        background-color: #2196F3; /* Couleur pour l'information */
+        color: white;
+        opacity: 1;
+        margin-bottom: 15px;
+        transition: opacity 0.6s;
+    }
+
+    .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .closebtn:hover {
+        color: black;
+    }
+
+    /* Modifier l'apparence de l'option "Sélectionner un pays" dans le select */
+    select option {
+        font-size: 16px;  /* Taille par défaut des options */
+        color: #333; /* Couleur des options */
+    }
+
+    /* Style particulier pour l'option "Sélectionner un pays" */
+    select option:first-child {
+        font-size: 14px;  
+        font-style: italic; /* Mettre en italique */
+        color: #777;  /* Couleur moins foncée pour l'option */
+    }
+
+    .form-section {
+        margin-bottom: 25px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #dbd4e4;
+    }
+    .form-section h3 {
+        margin-top: 0;
+        color: #3b0ce4;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        font-weight: bold;
+    }
+
+    .same_line{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .same_line button {
+        width: 40%; /* Le bouton prend toute la largeur disponible */
+        padding: 12px;
+        margin: 12px;
+        color: white; /* Texte blanc */
+        font-size: 16px;
+        border: none;
+        border-radius: 5px; /* Coins arrondis */
+        cursor: pointer;
+        transition: background-color 0.3s ease; /* Animation au survol */
+    }
+
+    @media (max-width: 768px) {
+        .team-grid {
+            grid-template-columns: 1fr;
+            padding: 0 15px;
+        }
+        
+        .team-grid::before {
+            display: none;
+        }
+
+        .team-member {
+            max-width: 100%;
+        }
+    }
+</style>
+
+{% endblock %}

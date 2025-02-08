@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saisie des Indicateurs Économiques</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <!-- CSS intégré dans le fichier HTML -->
+    <style>
+        /* CSS général pour la page */
+        body {
+            font-family: 'Times New Roman', Times, serif; /* Police Times New Roman */
+            background-color: #bebece; /* Fond doux */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center; /* Centrer horizontalement */
+            align-items: center; /* Centrer verticalement */
+            height: 100vh; /* Prendre toute la hauteur de la fenêtre */
+            flex-direction: column; /* Disposer les éléments verticalement */
+        }
+
+        /* Conteneur principal pour le titre */
+        .header-container {
+            width: 100%;
+            max-width: 600px; /* Limiter la largeur maximale du titre */
+            background-color: #5938ab; /* Couleur de fond plus claire */
+            color: #cd5757; /* Couleur du texte */
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px; /* Coins arrondis */
+            margin-top: 20px; /* Espacement avec le haut de la page */
+            margin-bottom: 20px; /* Espacement entre le titre et le formulaire */
+            font-style: italic; /* Mettre le texte en italique */
+        }
+
+        /* Conteneur principal pour le formulaire */
+        .container {
+            width: 100%;
+            max-width: 600px; /* Limiter la largeur maximale du formulaire */
+            background-color: #ebe7f0; /* Couleur de fond clair pour le formulaire */
+            padding: 20px; /* Espacement intérieur */
+            border-radius: 8px; /* Coins arrondis */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère autour du formulaire */
+            border: 1px solid #ddd; /* Bordure claire autour du formulaire */
+            margin-bottom: 20px; /* Espacement sous le formulaire */
+        }
+
+        /* Style du titre principal */
+        h1 {
+            text-align: center;
+            color: #333; /* Couleur du texte */
+            font-size: 24px;
+            margin: 0;
+        }
+
+        /* Style de l'en-tête de chaque section */
+        h2 {
+            font-size: 20px;
+            color: #444;
+            margin-bottom: 15px;
+        }
+
+        /* Style des sections du formulaire */
+        section {
+            margin-bottom: 25px;
+        }
+
+        /* Style pour les champs du formulaire (input, select, textarea) */
+        input, select, textarea {
+            width: 100%; /* Prendre toute la largeur disponible */
+            padding: 12px; /* Espacement intérieur */
+            font-size: 16px; /* Taille de police plus grande */
+            border: 1px solid #ccc; /* Bordure claire */
+            border-radius: 5px; /* Coins arrondis */
+            margin-bottom: 15px; /* Espacement entre les champs */
+            box-sizing: border-box; /* Inclure le padding dans la largeur totale */
+        }
+
+        /* Style pour les labels des champs*/
+        label {
+            font-weight: bold; /* Mettre les labels en gras */
+            display: block; /* S'assurer que le label est sur une nouvelle ligne */
+            margin-bottom: 5px; /* Espacement entre le label et le champ */
+        }
+
+        /* Style pour les boutons */
+        button {
+            width: 100%; /* Le bouton prend toute la largeur disponible */
+            padding: 12px;
+            background-color: #16c3bd; /* Couleur verte pour le bouton */
+            color: white; /* Texte blanc */
+            font-size: 16px;
+            border: none;
+            border-radius: 5px; /* Coins arrondis */
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Animation au survol */
+        }
+
+        /* Changer la couleur du bouton au survol */
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Style des alertes ou des messages (si nécessaire) */
+        .alert {
+            background-color: #4CAF50; /* Fond vert pour les messages de succès */
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .alert p {
+            margin: 0;
+        }
+
+        /* Modifier l'apparence de l'option "Sélectionner un pays" dans le select */
+        select option {
+            font-size: 16px;  /* Taille par défaut des options */
+            color: #333; /* Couleur des options */
+        }
+
+        /* Style particulier pour l'option "Sélectionner un pays" */
+        select option:first-child {
+            font-size: 14px;  /* Réduire la taille de police */
+            font-style: italic; /* Mettre en italique */
+            color: #777;  /* Couleur moins foncée pour l'option */
+        }
+    </style>
+
+    <!-- Inclure jQuery depuis un CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+
+    <!-- Titre "Ajouter un Indicateur Économique" dans un cadre séparé -->
+    <div class="header-container">
+        <h1>Ajouter un Indicateur Économique</h1>
+    </div>
+
+    <!-- Formulaire 1 -->
+    <div class="container">
+        <form method="POST" action="{% url 'handle_form1' %}" id="form1">
+            {% csrf_token %}
+            {{ form1.as_p }}
+            <button type="submit" id="valider1">Valider</button>
+        </form>
+    </div>
+
+    <!-- Formulaire 2 (caché par défaut) -->
+    <div class="container">
+        <form method="POST" action="{% url 'handle_form2' %}" id="form2" style="display: {% if show_step2 %} block {% else %} none {% endif %};">
+            {% csrf_token %}
+            {{ form2.as_p }}
+            <button type="submit" id="valider2">Enregistrer les données</button>
+        </form>
+    </div>
+
+    <div>
+        <p>{% if show_step2 %} {% else %} {{ message }} {% endif %} </p>
+    </div>
+
+</body>
+
+</html>

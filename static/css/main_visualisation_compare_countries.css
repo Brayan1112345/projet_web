@@ -1,0 +1,77 @@
+.container_visualisation {
+    display: grid;
+    grid-template-columns: 280px 1fr 275px; 
+    gap: 2%;
+    max-width: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.filters {
+    background: #f5f5f5;
+    padding: 8%;
+    border-radius: 5%;
+    height: fit-content;
+    overflow-y: auto;
+    max-height: calc(80%);
+}
+
+.visualization {
+    background: white;
+    border-radius: 8px;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    overflow: visible;
+}
+
+
+.indicator-description {
+    background: #f8f9fa;
+    border-radius: 8px;         /* Valeur en pixels pour une apparence cohérente */
+    border-left: 4px solid #007bff;  
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);  /* Ombre légère pour la profondeur */
+}
+  
+.stats {
+    padding: 5%;
+    border-radius: 5%;
+    height: fit-content;
+    overflow-y: auto;
+    max-height: calc(80%);
+}
+  
+#plotly-chart {
+    height: 90vh;
+    width:100%;
+}
+   
+.stats-checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50%, 1fr));
+    gap: 1.1%;
+}
+
+
+.stats-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 1.1%;
+}
+    
+.form-group {
+    margin-bottom: 6%;
+}
+    
+/* Ajustements pour Select2 */
+.select2-container {
+    width: 100% !important;
+}
+
+.welcome-message {
+    text-align: center;
+    padding: 1.5%;
+    background: #f8f9fa;
+    border-radius: 0.4%;
+}

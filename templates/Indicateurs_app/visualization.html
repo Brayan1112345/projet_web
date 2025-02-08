@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Visualisation de l'indicateur {% endblock %}
+
+{% block extra_css_js %}
+
+<style>
+    .page-title {
+        background: linear-gradient(45deg, #2196F3, #00BCD4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-column {
+        background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+        border-right: 1px solid #e9ecef;
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    .graph-column {
+        padding: 2rem;
+        background-color: white;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .graph-container {
+        flex-grow: 1;
+        min-height: 600px; /* Hauteur minimale garantie */
+        height: calc(100vh - 100px); /* Hauteur dynamique */
+    }
+
+    .custom-form {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+
+    .custom-select, .custom-input {
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        padding: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .custom-select:focus, .custom-input:focus {
+        border-color: #2196F3;
+        box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25);
+    }
+
+    .btn-visualize {
+        background: linear-gradient(45deg, #2196F3, #00BCD4);
+        border: none;
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-visualize:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+    }
+
+    .btn-return {
+        background: white;
+        color: #2196F3;
+        border: 2px solid #2196F3;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-return:hover {
+        background: #2196F3;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Colonne du formulaire -->
+        <div class="col-md-4 form-column">
+            <h2 class="page-title">{{ indicator.Name }}</h2>
+            <div class="custom-form">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="country" class="form-label fw-bold">Pays</label>
+                        <select name="country" id="country" class="form-select custom-select">
+                            {% for country in countries %}
+                                <option value="{{ country.ID_Country }}" 
+                                    {% if country.ID_Country == selected_country %}selected{% endif %}>
+                                    {{ country.Countryname }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Période</label>
+                        <div class="row g-2">
+                            <div class="col">
+                                <input type="number" name="start_year" class="form-control custom-input"
+                                       value="{{ start_year }}" min="1960" max="2023">
+                            </div>
+                            <div class="col-auto d-flex align-items-center">
+                                <span class="fw-bold">-</span>
+                            </div>
+                            <div class="col">
+                                <input type="number" name="end_year" class="form-control custom-input"
+                                       value="{{ end_year }}" min="1960" max="2023">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-visualize w-100 mb-3">
+                        <i class="fas fa-chart-line me-2"></i>Visualiser
+                    </button>
+                </form>
+                {% if indicator.Class.ID_class == 3 %}
+                <a href="{% url 'Indicateurs_app:ind_dem' %}" class="btn btn-return w-100">
+                    <i class="fas fa-arrow-left me-2"></i>Retour aux indicateurs démographiques
+                </a>
+                {% elif indicator.Class.ID_class == 2 %}
+                <a href="{% url 'Indicateurs_app:ind_eco' %}" class="btn btn-return w-100">
+                    <i class="fas fa-arrow-left me-2"></i>Retour aux indicateurs économiques
+                </a>
+                {% else %}
+                <a href="{% url 'Indicateurs_app:ind_soc' %}" class="btn btn-return w-100">
+                    <i class="fas fa-arrow-left me-2"></i>Retour aux indicateurs sociaux
+                </a>
+                {% endif %}
+                
+            </div>
+        </div>
+
+        <!-- Colonne du graphique -->
+        <div class="col-md-8 graph-column">
+            <div id="plotly-graph" class="graph-container"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chartData = JSON.parse('{{ chart_json|safe }}');
+        
+        // Ajuster le layout pour un meilleur aspect ratio
+        const layout = {
+            ...chartData.layout,
+            height: 600,  // Hauteur fixe minimale
+            margin: { t: 50, r: 50, b: 50, l: 50 },  // Marges ajustées
+            yaxis: {
+                ...chartData.layout.yaxis,
+                title: {
+                    text: "{{ indicator.Name }}",
+                    font: { size: 14 }
+                }
+            },
+            xaxis: {
+                ...chartData.layout.xaxis,
+                title: {
+                    text: "Année",
+                    font: { size: 14 }
+                }
+            }
+        };
+
+        Plotly.newPlot('plotly-graph', chartData.data, layout, {
+            responsive: true,
+            displayModeBar: true,
+            displaylogo: false
+        });
+
+        // Gérer le redimensionnement
+        window.addEventListener('resize', function() {
+            Plotly.Plots.resize('plotly-graph');
+        });
+    });
+</script>
+{% endblock %}

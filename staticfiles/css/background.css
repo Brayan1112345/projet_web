@@ -1,0 +1,21 @@
+.background-section {
+    background-image: url('https://static.vecteezy.com/ti/vecteur-libre/p1/5065837-drapeau-de-l-afrique-centrale-avec-armature-de-bouclier-metal-gratuit-vectoriel.jpg'); /* Chemin vers votre image */
+    background-size: cover; /* Adapte l'image à la taille du conteneur */
+    background-position: center; /* Centre l'image */
+    background-repeat: no-repeat; /* Évite la répétition de l'image */
+    height: 300px; /* Hauteur de la section */
+    display: flex; /* Centrage du contenu */
+    align-items: center; /* Alignement vertical */
+    justify-content: center; /* Alignement horizontal */
+    color: white; /* Couleur du texte */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Ombre sur le texte pour lisibilité */
+    position: relative;
+}
+
+/* Contenu à l'intérieur de la section */
+.content-background {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5); /* Fond semi-transparent pour lisibilité */
+    border-radius: 10px;
+}

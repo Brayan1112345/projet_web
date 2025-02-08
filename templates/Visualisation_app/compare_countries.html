@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Comparer des pays {% endblock %}
+
+{% block extra_css_js %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.24.1/plotly.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/main_visualisation_compare_countries.css' %}">
+<style>
+    .main-content {
+        min-height: 70vh;
+        padding: 80px 2% 2% 2%; 
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container_visualisation">
+    <div class="filters">
+        <div class="form-group">
+            <label for="indicator">Indicateur :</label>
+            <select id="indicator" class="select2">
+                <option value="">Sélectionnez un indicateur</option>
+                {% for indicator in indicators %}
+                    <option value="{{ indicator.id }}">{{ indicator.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="countries">Pays (max 4) :</label>
+            <select id="countries" class="select2" multiple>
+                {% for country in countries %}
+                    <option value="{{ country.ID_Country }}">{{ country.Countryname }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Période :</label>
+            <div class="period-inputs">
+                <input type="number" id="start-year" value="2000" min="1960" max="2020">
+                <input type="number" id="end-year" value="2020" min="1960" max="2020">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Statistiques à calculer :</label>
+            <div class="stats-checkbox-group">
+                {% for stat in statistics %}
+                <div class="stats-checkbox-item">
+                    <input type="checkbox" id="{{ stat.id }}" name="statistics" value="{{ stat.id }}"
+                           {% if stat.id == 'mean' or stat.id == 'median' %}checked{% endif %}>
+                    <label for="{{ stat.id }}">{{ stat.name }}</label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="visualization">
+        <div id="welcome-message" class="welcome-message">
+            <h2>Comparaison des pays par indicateur</h2>
+            <p>Cet outil vous permet de comparer l'évolution d'un même indicateur pour plusieurs pays.</p>
+            <p>Pour commencer :</p>
+            <ul>
+                <li>Sélectionnez un indicateur</li>
+                <li>Choisissez jusqu'à 4 pays à comparer</li>
+                <li>Ajustez la période si nécessaire</li>
+            </ul>
+            <p>La visualisation se mettra à jour automatiquement dès que vous aurez fait vos sélections.</p>
+        </div>
+        <div id="indicator-description" class="indicator-description" style="display: none;"></div>
+        <div id="plotly-chart" style="display: none;"></div>
+    </div>
+    
+    <div class="stats" id="stats-container"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %} 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Récupère l'année en cours
+        const currentYear = new Date().getFullYear();
+
+        // Sélectionne les inputs pour l'année de début et l'année de fin
+        const startYearInput = document.getElementById('start-year');
+        const endYearInput = document.getElementById('end-year');
+
+        // Met à jour l'attribut max de chaque input avec l'année en cours
+        startYearInput.setAttribute('max', currentYear);
+        endYearInput.setAttribute('max', currentYear);
+
+    });
+
+    $(document).ready(function() {
+    $('.select2').select2({
+        language: {
+            noResults: function() {
+                return "Aucun résultat trouvé";
+            }
+        }
+    });
+    
+    // Limitation à 4 pays maximum
+    $('#countries').on('select2:select', function (e) {
+        if ($(this).val().length > 4) {
+            $(this).val($(this).val().slice(0, 4)).trigger('change');
+            alert('Vous ne pouvez pas sélectionner plus de 4 pays');
+        }
+    });
+
+    const GET_COUNTRY_DATA_URL = "{% url 'Visualisation_app:get_country_data' %}";
+    function updateVisualization() {
+        const indicator = $('#indicator').val();
+        const countries = $('#countries').val();
+        const selectedStats = $('input[name="statistics"]:checked').map(function() {
+            return this.value;
+        }).get();
+        
+        if (!indicator || !countries || countries.length === 0 || selectedStats.length === 0) {
+            $('#welcome-message').show();
+            $('#plotly-chart').hide();
+            $('#indicator-description').hide();
+            $('#stats-container').empty();
+            return;
+        }
+        
+        const startYear = $('#start-year').val();
+        const endYear = $('#end-year').val();
+        
+        $.get(GET_COUNTRY_DATA_URL, {
+            indicator: indicator,
+            countries: countries,
+            start_year: startYear,
+            end_year: endYear,
+            statistics: selectedStats
+        }, function(response) {
+            if (response.error) {
+                alert(response.error);
+                return;
+            }
+            
+            $('#welcome-message').hide();
+            $('#indicator-description').html(response.description).show();
+            $('#plotly-chart').show();
+
+            updatePlotlyChart(response.data);
+            updateStats(response.stats);
+        });
+    }
+    
+    // Mise à jour du graphique Plotly
+    function updatePlotlyChart(data) {
+        const traces = [];
+        const colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'];
+        
+        let i = 0;
+        for (let countryId in data) {
+            const countryName = $('#countries option[value="' + countryId + '"]').text();
+            traces.push({
+                x: data[countryId].years,
+                y: data[countryId].values,
+                name: countryName,
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {
+                    color: colors[i],
+                    width: 2
+                },
+                marker: {
+                    size: 6,
+                    color: colors[i]
+                }
+            });
+            i++;
+        }
+
+        const indicatorName = $('#indicator option:selected').text();
+        
+        const layout = {
+            title: {text: `Évolution du ${indicatorName}`, font: {size: 20}},
+            xaxis: {title: 'Année'},
+            showlegend: true,
+            legend: {
+                x: 1,
+                xanchor: 'right',
+                y: 1
+            },
+            plot_bgcolor: 'white',
+            paper_bgcolor: 'white',
+            margin: {
+                l: 80,  // Augmentation des marges
+                r: 50,
+                t: 50,
+                b: 50   // Augmentation de la marge du bas
+            },
+            autosize: true,    // Active le redimensionnement automatique
+            width : 600
+        };
+        
+        Plotly.newPlot('plotly-chart', traces, layout, {
+            responsive: true,
+            autosize: true
+        });
+
+        // Fonction pour redimensionner le graphique quand la fenêtre change de taille
+        window.addEventListener('resize', function() {
+            Plotly.Plots.resize('plotly-chart');
+        });
+
+    }
+
+    // Mise à jour des statistiques
+    function updateStats(stats) {
+        let html = '<h3>Statistiques</h3>';
+        
+        // Définition des noms en français pour chaque statistique
+        const statNames = {
+            'mean': 'Moyenne',
+            'std': 'Écart-type',
+            'var': 'Variance',
+            'median': 'Médiane',
+            'seasonality': 'Saisonnalité',
+            'skewness': 'Asymétrie',
+            'kurtosis': 'Aplatissement'
+        };
+
+        for (let countryId in stats) {
+            const countryName = $('#countries option[value="' + countryId + '"]').text();
+            html += `
+                <div class="country-stats" style="margin-bottom: 20px; padding: 10px; background-color: #f8f9fa; border-radius: 5px;">
+                    <h4 style="color: #007bff; margin-bottom: 10px;">${countryName}</h4>
+                    <table style="width: 100%;">
+            `;
+
+            // Parcourir toutes les statistiques disponibles pour ce pays
+            for (let statKey in stats[countryId]) {
+                const value = stats[countryId][statKey];
+                
+                // Ne pas afficher les statistiques null ou undefined
+                if (value !== null && value !== undefined) {
+                    // Formater la valeur en écriture scientique
+                    const formattedValue = typeof value === 'number' 
+                        ? (Math.abs(value) < 0.0001 || Math.abs(value) >= 10000 
+                            ? value.toExponential(4)
+                            : value.toFixed(4))
+                        : value;
+
+
+                    html += `
+                        <tr>
+                            <td style="padding: 5px;"><strong>${statNames[statKey] || statKey}:</strong></td>
+                            <td style="padding: 5px; text-align: right;">${formattedValue}</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            html += `
+                    </table>
+                </div>
+            `;
+        }
+
+        if (Object.keys(stats).length === 0) {
+            html += '<p>Aucune donnée statistique disponible.</p>';
+        }
+
+        $('#stats-container').html(html);
+    }
+
+    // Événements pour la mise à jour automatique
+    $('#indicator, #countries').on('change', updateVisualization);
+    $('#start-year, #end-year').on('input', updateVisualization);
+    $('input[name="statistics"]').on('change', updateVisualization);
+});
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

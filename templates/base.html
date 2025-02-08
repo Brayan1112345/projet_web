@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Application de Gestion des indicateurs statistiques de l'Afrique Centrale{% endblock %}</title>
+
+	{% load static %}
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        header{
+            position: fixed;  /* Fige l'élément en haut de la page */
+            top: 0; /* Aligne le header tout en haut */
+            z-index: 1000; /* Assure que le header reste au-dessus d'autres éléments */
+            width: 100%;
+        }
+
+        .header-top {
+            left: 0;
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            padding: 0.9%;
+            box-shadow: 0 0.4% 1% rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            height: 60px;
+        }
+
+        .flags-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1%; 
+        }
+
+        .flag-icon {
+            width: 5%;
+            height: 4.5%;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            box-shadow:  0 0.4% 1% rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+   
+        .flag-icon:hover {
+            transform: scale(1.1);
+        }
+       
+        .nav-bottom {
+            width: 100%;
+            margin: 0;
+            padding: 1.4% 0; 
+            background-image: url('{% static "img/drapeau_afrique_centrale.png" %}');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .nav-bottom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+        
+        .nav-bottom .nav-item {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .footer {
+            background: linear-gradient(45deg, #FFD700, #FFC800);
+            padding:  2%;
+            margin-top: auto;
+            width: 100%;
+        }
+        
+        .main-content {
+            min-height: 50%;
+            padding: 5%;
+            margin-top: 7%;
+        }
+        
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .content {
+            flex: 1;
+        }
+
+        @media (max-width: 991px) { /* 991px correspond à lg dans Bootstrap */
+            .main-content {
+                margin-top: 180px; /* Ajustez selon la hauteur de votre header */
+            }
+
+            .navbar-collapse {
+                background: rgba(0, 0, 0, 0.8); /* Fond semi-transparent pour le menu mobile */
+                padding: 15px;
+                border-radius: 5px;
+            }
+
+            .navbar-toggler {
+                z-index: 2; /* S'assure que le bouton reste cliquable */
+                margin-right: 15px;
+            }
+
+            .header-top {
+                padding: 10px;
+            }
+
+            .flags-container {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .flag-icon {
+                width: 30px; /* Taille fixe en pixels plutôt qu'en pourcentage */
+                height: 20px;
+            }
+        }
+
+    </style>
+    {% block extra_css_js %} 
+    {% endblock %}
+
+    <style>
+        .col-md-7 {
+            padding-left: 0;
+            margin-left: 0;
+            max-width: 50%;
+        }
+
+        .col-md-3 {
+            display: inline; 
+            white-space: nowrap;
+            max-width: 40%;
+            margin-left: 5%;
+        }
+
+        /* pied de page */
+
+        .social-hz {
+            list-style-type: none;  
+            padding: 0;          
+            margin: 0;            
+            display: flex;      
+            justify-content: flex-start; 
+        }
+        .social-hz li {
+            margin-right: 20px;
+        }
+        .social-hz li a {
+            font-size: 1.5em;      
+        }
+        h5 {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 5%;
+            padding-top: 0%;
+            text-align: center;
+        }
+        .col-md-40 {
+            padding-left: 3%;
+            padding-right: 3%;
+            margin-top: 0%;
+            margin-left: 2%;
+            margin-right: 2%;
+            max-width: 29%;
+            line-height: 2;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <!-- En-tête première subdivision -->
+        <header>
+            <div class="header-top">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <img src="{% static 'img/logo.jpeg' %}" alt="Logo" class="logo">
+                        </div>
+                        <div class="col-md-7">
+                            <!-- Drapeaux des pays avec tooltips -->
+                            <div class="flags-container">
+                                <img src="{% static 'img/Angola.png' %}" alt="Angola" class="flag-icon"
+                                data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                title="Angola - Population: 35.87M, Capitale: Luanda">
+                                <img src="{% static 'img/Burundi.png' %}" alt="Burundi" class="flag-icon"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Burundi - Population: 13.03M, Capitale: Gitega">
+                                <img src="{% static 'img/Cameroun.png' %}" alt="Cameroun" class="flag-icon" 
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom" 
+                                    title="Cameroun - Population: 28.52M, Capitale: Yaoundé">
+                                <img src="{% static 'img/Congo.png' %}" alt="Congo" class="flag-icon"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Congo - Population: 6.05M, Capitale: Brazaville">
+                                <img src="{% static 'img/Gabon.png' %}" alt="Gabon" class="flag-icon"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Gabon - Population: 2.44M, Capitale: Libreville">						
+                                <img src="{% static 'img/Guinée.png' %}" alt="Guinée" class="flag-icon"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Guinée équatoriale - Population: 1.61M, Capitale: Malabo">
+                                <img src="{% static 'img/RCA.png' %}" alt="RCA" class="flag-icon"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="RCA - Population: 5.86M, Capitale: Bangui">
+                                <img src="{% static 'img/RDC.png' %}" alt="RDC" class="flag-icon"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="RDC - Population: 100.95M, Capitale: Kinshasa">
+                                <img src="{% static 'img/Rwanda.png' %}" alt="Rwanda" class="flag-icon"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Rwanda - Population: 13.74M, Capitale: Kigali">
+                                <img src="{% static 'img/Sao.png' %}" alt="Sao" class="flag-icon"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Sao Tomé et Principe - Population: 0.23M, Capitale: Sao Tomé">
+                                <img src="{% static 'img/Tchad.png' %}" alt="Tchad" class="flag-icon"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Tchad - Population: 18.59M, Capitale: N'Djamena">
+                            </div> 
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <span>
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'Users_app:deconnexion' %}" style="text-indent: 10px;"><i class="fas fa-sign-out-alt"></i> Se déconnecter</a>
+                                    {% if user.is_superuser %}
+                                        <a href="{% url 'admin:index' %}" style="text-indent: 10px;"><i class="fas fa-user-plus"></i> Administration</a>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="{% url 'Users_app:inscription' %}"><i class="fas fa-user-plus"></i>S'inscrire</a>
+                                    <a href="{% url 'Users_app:connexion' %}" style="text-indent: 10px;"><i class="fas fa-user-plus"></i> Se connecter</a>
+                                {% endif %}
+                                    <a href="{% url 'pages:about' %}" style="text-indent: 10px;"><i class="fas fa-info-circle"></i> À propos</a>
+                                    <a href="{% url 'pages:contact' %}" style="text-indent: 10px;"><i class="fas fa-address-book"></i> Contacts</a>
+                            </span> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- En-tête deuxième subdivision -->
+            <nav class="navbar navbar-expand-lg navbar-dark nav-bottom">
+                <div class="container-fluid">
+                    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'pages:home' %}"><i class="fas fa-home"></i> Accueil</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="indicateursDropdown" role="button" 
+                                data-bs-toggle="dropdown"><i class="fas fa-search"></i> Indicateurs</a>
+                                <ul class="dropdown-menu">
+
+                                    <li><a class="dropdown-item" href="{% url 'Indicateurs_app:ind_dem' %}">Démographiques</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'Indicateurs_app:ind_eco' %}">Économiques</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'Indicateurs_app:ind_soc' %}">Sociaux</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="visualisationDropdown" role="button" 
+                                data-bs-toggle="dropdown"><i class="fas fa-chart-bar"></i> Visualisation</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'Visualisation_app:compare_countries' %}">Comparer par pays</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'Visualisation_app:compare_indicators' %}">Comparer les indicateurs</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'Visualisation_app:distribute_indicator' %}">Répartition d'un indicateur</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'Visualisation_app:cartography_indicator' %}">Cartographie d'un indicateur</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item"> 
+                                <a class="nav-link" href="{% url 'Export_csv_app:index' %}"><i class="fas fa-download"></i> Exporter données</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'Report_app:generate_PDF' %}"><i class="fas fa-file-alt"></i> Générer un Rapport</a>
+                            </li>
+                            {% if user.is_authenticated %}
+                                {% if user.is_staff or user.is_superuser %}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="formulaireDropdown" role="button" 
+                                    data-bs-toggle="dropdown"><i class="fas fa-edit"></i> Formulaire</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{% url 'Form_app:Save_Indicator1' %}">Enregistrer les données</a></li>
+                                        {% if user.is_superuser %}
+                                            <li><a class="dropdown-item" href="{% url 'Form_app:Modify_Indicator1' %}">Modifier les données</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'Form_app:delete_indicator1' %}">Supprimer les données</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                                {% endif %}
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Contenu principal -->
+        <main class="main-content">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+    <!-- Pied de page -->
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-40 text-left">
+                    <h5>À propos</h5>
+                    <p class="par-0">Plateforme de visualisation et d'analyse statistique des données des pays d'Afrique Centrale.</p>
+                    <div class="cell flex-half align-right text-right">
+                        <ul class="social-hz">
+                            <li><a href="http://www.twitter.com/imfnews" target="_blank" class="fab fa-twitter" title="Follow IMF Twitter"></a></li>
+                            <li><a href="https://www.facebook.com/International-Monetary-Fund-152292984850728/" class="fab fa-facebook-f" target="_blank" title="Follow IMF Facebook"></a></li>
+                            <li><a href="http://www.linkedin.com/company/international-monetary-fund" class="fab fa-linkedin-in" target="_blank" title="Follow IMF LinkedIn"></a></li>
+                            <li><a href="https://www.instagram.com/the_imf/" class="fab fa-instagram" target="_blank" title="Follow IMF Instagram"></a></li>
+                            <li><a href="http://www.youtube.com/imf" class="fab fa-youtube" target="_blank" title="Follow IMF Youtube"></a></li>
+                            <li><a href="/external/pubs/ft/survey/so/podcast.aspx" class="far fa-podcast" title="IMF Podcasts"></a></li>
+                            <li><a href="http://www.flickr.com/imfphoto" class="fab fa-flickr" target="_blank" title="Follow IMF Flickr"></a></li>
+                            <li><a href="/en/email-subscription/index" class="fas fa-envelope-open-text" title="Subscribe to IMF Emails"></a></li>
+                        </ul>
+                    </div>
+                </div>
+        
+                <div class="col-md-40 text-center">
+                    <h5>Liens rapides</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'pages:home' %}" class="text-dark"><i class="fas fa-home"></i> Accueil</a></li>
+                        <li><a href="{% url 'pages:about' %}" class="text-dark"><i class="fas fa-info-circle"></i> À propos</a></li>
+                        <li><a href="{% url 'pages:contact' %}" class="text-dark"><i class="fas fa-address-book"></i> Contact</a></li>
+                    </ul>
+                </div>
+
+        
+                <div class="col-md-40 text-right">
+                    <h5>Contact (Chef de Projet)</h5>
+                    <p class="par-0"><i class="fas fa-envelope"></i>  Email: youmbi.jordan77@gmail.com
+                    <br><i class="fas fa-phone"></i>  Tél: +237 6 54 95 18 74</p>
+                </div>
+            </div>
+        
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; {% now "Y" %} ISSEA-CEMAC. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+        
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialisation des tooltips Bootstrap
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+    {% block extra_js %} 
+    {% endblock %}
+</body>
+</html>

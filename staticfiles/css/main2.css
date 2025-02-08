@@ -1,0 +1,183 @@
+.form-container {
+    font-family: 'Times New Roman', Times, serif; /* Police Times New Roman */
+    background-color: #ffffff; /* Fond doux */
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    height: auto;
+    flex-direction: column; /* Disposer les éléments verticalement */
+}
+
+.container1 {
+    width: 100%;
+    max-width: 65%; 
+    background: linear-gradient(to right, #f8f9fa, #e9ecef);
+    padding: 20px; /* Espacement intérieur */
+    border-radius: 8px; /* Coins arrondis */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère autour du formulaire */
+    border: 1px solid #ddd; /* Bordure claire autour du formulaire */
+    margin-bottom: 20px; /* Espacement sous le formulaire */
+}
+
+/* Conteneur principal pour le titre */
+.header-container {
+    width: 100%;
+    max-width: 55%; /* Limiter la largeur maximale du titre */
+    background-color: #f3c250; 
+    color: #050404; /* Couleur du texte */
+    padding: 2%;
+    text-align: center;
+    border-radius: 8px; /* Coins arrondis */
+    margin: 1%;
+    font-style: italic; /* Mettre le texte en italique */
+}
+
+h1 {
+    text-align: center;
+    color: #333; /* Couleur du texte */
+    font-size: 24px;
+    margin: 0;
+    font-family: 'Times New Roman', Times, serif; /* Police Times New Roman */
+}
+
+/* Style de l'en-tête de chaque section */
+h2 {
+    font-size: 20px;
+    color: #444;
+    margin-bottom: 15px;
+    font-family: 'Times New Roman', Times, serif; /* Police Times New Roman */
+}
+
+/* Style des sections du formulaire */
+section {
+    margin-bottom: 25px;
+}
+
+/* Style pour les champs du formulaire (input, select, textarea) */
+input, select, textarea {
+    width: 100%; /* Prendre toute la largeur disponible */
+    padding: 12px; /* Espacement intérieur */
+    font-size: 16px; /* Taille de police plus grande */
+    border: 1px solid #ccc; /* Bordure claire */
+    border-radius: 5px; /* Coins arrondis */
+    margin-bottom: 15px; /* Espacement entre les champs */
+    box-sizing: border-box; /* Inclure le padding dans la largeur totale */
+}
+
+/* Style pour les labels des champs*/
+label {
+    font-weight: bold; /* Mettre les labels en gras */
+    display: block; /* S'assurer que le label est sur une nouvelle ligne */
+    margin-bottom: 5px; /* Espacement entre le label et le champ */
+    font-family: 'Times New Roman', Times, serif; /* Police Times New Roman */
+}
+
+/* Style pour les boutons */
+button {
+    width: 100%; /* Le bouton prend toute la largeur disponible */
+    padding: 12px;
+    background-color: #16c3bd; /* Couleur verte pour le bouton */
+    color: white; /* Texte blanc */
+    font-size: 16px;
+    border: none;
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Animation au survol */
+}
+
+/* Changer la couleur du bouton au survol */
+button:hover {
+    background-color: #45a049;
+}
+
+/* Style des alertes ou des messages */
+.alert {
+    background-color: #f3b10b; 
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.alert1 {
+    background-color: #e2d9e6; 
+    color: rgb(28, 25, 25);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.alert p {
+    margin: 0;
+}
+
+/* Modifier l'apparence de l'option "Sélectionner un pays" dans le select */
+select option {
+    font-size: 16px;  /* Taille par défaut des options */
+    color: #333; /* Couleur des options */
+    font-family: 'Times New Roman', Times, serif; /* Police Times New Roman */
+}
+
+/* Style particulier pour l'option "Sélectionner un pays" */
+select option:first-child {
+    font-size: 14px;  
+    font-style: italic; /* Mettre en italique */
+    color: #777;  /* Couleur moins foncée pour l'option */
+    font-family: 'Times New Roman', Times, serif; /* Police Times New Roman */
+}
+
+.form-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #dbd4e4;
+}
+.form-section h3 {
+    margin-top: 0;
+    color: #3b0ce4;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    font-weight: bold;
+}
+
+.same_line{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.same_line button {
+    width: 40%; /* Le bouton prend toute la largeur disponible */
+    padding: 12px;
+    margin: 12px;
+    color: white; /* Texte blanc */
+    font-size: 16px;
+    border: none;
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Animation au survol */
+}
+
+@media (max-width: 768px) {
+    .team-grid {
+        grid-template-columns: 1fr;
+        padding: 0 15px;
+    }
+    
+    .team-grid::before {
+        display: none;
+    }
+
+    .team-member {
+        max-width: 100%;
+    }
+}

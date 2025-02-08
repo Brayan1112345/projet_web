@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Inscription {% endblock %}
+
+{% block extra_css_js %}
+<style>
+    /* CSS */
+    /* Import Google font - Poppins */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+    
+    h1 {
+        margin: 5% 0;
+        margin-bottom: 1.5em;
+        text-align: center;
+        size: 2em;
+    }
+
+    header{
+        left: 0;
+    }
+
+    .container_inscription {
+        width: 50%;
+        height: 15%;
+        background: linear-gradient(to right, #f8f9fa, #e9ecef);
+        border-radius: 7px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        margin: 2%;
+        margin-left: 25%;
+    }
+
+    .form {
+        padding: 60px;
+    }
+
+    label {
+        padding: 10px 0;
+        color: black;
+        cursor: pointer;
+        size: 14px;
+    }
+
+    p, label {
+        font:
+        1.2rem 'Fira Sans',
+        sans-serif;
+    }
+
+    .par-0, .mb-0, .list-unstyled {
+        line-height: 2;
+    }
+
+    input, fieldset {
+        width: 100%;
+        padding: 10px;
+        font-size: 17px;
+        border: 1px solid #ddd;
+
+        border-radius: 6px;
+        outline: none;
+        margin-bottom: 15px;
+        margin-top: 10px;
+    }
+
+    textarea {
+        font-size: 17px;
+        padding: 5px;
+        width: 100%;
+        line-height: 1.5;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-shadow: 1px 1px 1px #999;
+    }
+    #bio {
+        display: block;
+        margin-bottom: 10px;
+        padding: 6px;
+    }
+
+    .role input {
+        width: auto;
+        padding: 0px;
+        margin: 0.4rem;
+        font-size: 17px;
+        margin-bottom: 0px;
+        margin-top: 0px;
+    }
+
+
+    button {
+        color: #fff;
+        background: #FFD700;
+        width: 100%;
+        padding: 10px;
+        font-size: 1.5em;
+        margin-top: 10px;
+        border: none;
+        border-radius: 6px;
+        outline: none;
+    }
+
+    button:hover {
+        background: #FFD700;
+    }
+
+    .link {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .error-message {
+        background-color: red;
+        color: #fff;
+        border-radius: 6px;
+        padding: 1px;
+        margin-bottom: 0px;
+        font-size: 18px;      
+        text-align: center; 
+    }
+    ul {
+        list-style: none;
+        color: red;
+    }
+</style>
+{% endblock %}
+ 
+{% block content %}
+<div class="container_inscription"> 
+    <div class="form">
+        <form method="post" action="{% url 'Users_app:inscription' %}">
+            {% csrf_token %}
+            <h1> <span> Inscrivez-vous</span> </h1>
+            <div class="form-row">
+                <div class="form-group">
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                        <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                    </div>
+                    {% if form.username.errors %}
+                        <div class="error-message">{{ form.username.errors.0 }}</div>
+                    {% endif %}
+                    {{ form.username }}  
+                </div>
+                <div class="form-group">
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i> <!-- Icône pour le champ "Email" -->
+                        <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                    </div>
+                    {% if form.email.errors %}
+                        <div class="error-message">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                    {{ form.email }}
+                </div>
+                <div class="form-group">
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                    </div>
+                    {% if form.password1.errors %}
+                        <div class="error-message">{{ form.password1.errors.0 }}</div>
+                    {% endif %}
+                    {{ form.password1 }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                    {{ form.password2 }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+                    {% if form.last_name.errors %}
+                        <div class="error-message">{{ form.last_name.errors.0 }}</div>
+                    {% endif %}
+                    {{ form.last_name }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                    {% if form.first_name.errors %}
+                        <div class="error-message">{{ form.first_name.errors.0 }}</div>
+                    {% endif %}
+                    {{ form.first_name }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.bio.id_for_label }}" id="bio">{{ form.bio.label }}</label>
+                    {{ form.bio }}
+                </div>
+                <div class="role">
+                    <fieldset>
+                        <legend>{{ form.Role.label }}</legend>
+                        {{ form.Role }}
+                    </fieldset>
+                </div>
+            </div>    
+            <button type="submit">S'inscrire</button>
+        </form>
+        <p class="link">Déjà inscrit ? <a href="{% url 'Users_app:connexion' %}">Se connecter</a></p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %} 
+{% endblock %}
+

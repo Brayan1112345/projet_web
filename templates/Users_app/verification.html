@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Inscription {% endblock %}
+
+ 
+{% block content %}
+
+    <div class="container_verification">
+        <div class="container">
+            <div class="form">
+                <form method="post" action="{% url 'Users_app:verification' %}">
+                    {% csrf_token %}
+                    <h1>Vérification du statut de l'utilisateur</h1>
+                    <div class="form-group">
+                        <label for="{{ form.password2.id_for_label }}">{{ form.Code.label }}</label>
+                        {% if form.Code.errors %}
+                            <div class="error-messages">
+                                <p class="error">{{ form.Code.errors.0 }}</p>
+                            </div>
+                        {% endif %}
+                        {{ form.Code }}
+                    </div>   
+                    <button type="submit">Confirmer</button>
+                </form>
+                <p class="link">Changer de statut ? <a href="{% url 'Users_app:inscription' %}">Retour</a></p>
+            </div>
+        </div>      
+    </div>
+
+{% endblock %}
+
+{% block extra_css_js %} 
+<style>
+    /* CSS */
+    /* Import Google font - Poppins */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+    body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    
+    h1 {
+        margin: 20px 0;
+        margin-bottom: 2.5rem;
+        text-align: center;
+        size: 18px;
+    }
+
+    header{
+        left: 0;
+    }
+
+    .container_verification {
+        width: 80%;
+        height: 15%;
+        background: linear-gradient(to right, #f8f9fa, #e9ecef);
+        border-radius: 7px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        margin-top: 10%;
+        margin-left: 10%;
+    }
+
+    .container_verification .form {
+        padding: 30px;
+    }
+
+    p, label {
+        font:
+        1.2rem 'Fira Sans',
+        sans-serif;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        font-size: 1.2em;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        outline: none;
+        margin-bottom: 15px;
+        margin-top: 10px;
+    }
+
+    button {
+        color: #fff;
+        background: #FFD700;
+        width: 100%;
+        padding: 10px;
+        font-size: 1.3em;
+        margin-top: 10px;
+        border: none;
+        border-radius: 6px;
+        outline: none;
+    }
+
+    button:hover {
+        background: #FFD700;
+    }
+
+    .link {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .error-messages {
+        background-color: red;
+        color: #fff;
+        border-radius: 6px;
+        padding: 1px;
+        padding-top: 0.8em;
+        margin-top: 5px;
+        font-size: 1em;      
+        text-align: center; 
+    }
+</style>
+{% endblock %}

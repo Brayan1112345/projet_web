@@ -1,0 +1,91 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block title %} Rapport PDF {% endblock %}
+
+{% block extra_css_js %} 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport PDF</title>
+    
+    {% load static %}
+    
+{% block content %}
+    <div class="graphs">
+        <div class="description">
+            <h1>Rapport de l'indicateur {{indicator.Name}} en Afrique Centrale </h1><br>
+            <p>
+                <header><h3>Description de l'indicateur</h3></header><br>
+                <p class="text"> {{ indicator.Description }} </p>
+            </p>
+        </div>
+        <p>
+            {% for graph in graphs %}
+                {% if graph %}
+                    <!-- <img src="data:image/png;base64,{{ graph }}" alt="Graphique"> --> 
+                    <div class="graph">
+                        <img src="{{ graph }}" alt="Graphique du PIB"> 
+                    </div>
+                    <!-- {{ graph }} --> 
+                {% else %}
+                    <p>Pas de données disponibles pour ce pays.</p>
+                {% endif %}
+            {% endfor %}
+            \n
+        </p>
+    </div>
+    <div class="text-center">
+        <a href="{% url 'Report_app:download_PDF' %}" class="btn btn-primary" style="align-content: center;">télécharger en PDF</a>
+    </div>
+{% endblock %}
+
+
+{% block extra_css_js %}
+<style>
+    .graphs {
+        background-color: white;
+        text-align: center;
+        padding: 3%;
+        margin-left: 10%;
+        width: 80%;
+        height: auto;
+    }
+    .description{
+        text-indent: 5%;
+        text-wrap: 5%;
+    }
+    h1 {
+        text-align: center;
+        font-size: 2.7em;
+        font-weight: bold;
+    }
+    h3 {
+        font-size: 2.2em;
+    }
+    .text {
+        font-size: 1.7em;
+        font-family: 'Times New Roman', Times, serif;
+        line-height: 1.8;
+        text-align: justify;
+        padding: 2%;
+    }
+    .graph {
+        padding: 1%;
+    }
+</style>
+
+{% endblock %}
+
+.graphs {
+    max-width: 40%;
+    max-height: 50%;
+    padding: 3%;
+    width: 70%;
+}
+.graph {
+    width: 20%;
+    height: 50px;
+
+    padding: 5%;
+    margin-left: 0px;
+}

@@ -1,0 +1,363 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Application de Gestion des indicateurs de l'Afrique Centrale {% endblock %}
+
+
+{% block extra_css_js %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    /* Section Héro */
+    .hero-section {
+        position: relative;
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                    url('{% static "img/africa.jpeg" %}');
+        background-size: cover;
+        background-position: center;
+        min-height: 500px;
+        display: flex;
+        align-items: center;
+        color: white;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Cartes d'indicateurs */
+    .indicator-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        height: 100%;
+    }
+
+    .indicator-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .indicator-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    /* Section Carte */
+    #map-container {
+        height: 500px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Graphiques */
+    .chart-container {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    /* Animations */
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Sections générales */
+    section {
+        padding: 4rem 0;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: #2c3e50;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        color: #7f8c8d;
+        margin-bottom: 2rem;
+    }
+
+    /* Style spécifique pour les cartes de fonctionnalités */
+    .feature-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Style pour le carrousel d'indicateurs */
+    .indicator-carousel {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 8px;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 5%;
+        color: #2c3e50;
+    }
+    /* Container spécifique pour l'animation */
+    .banner-container {
+            overflow: hidden;
+            /* Largeur limitée pour démonstration */
+            max-width: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+        }
+
+        .sliding-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: slideIn 2s ease-out;
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Section Héro -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <div class="banner-container">
+                <div class="sliding-text">
+                    <h1 class="display-4 mb-4"><span> Système de Gestion des Indicateurs  </span></h1>
+                </div>
+            </div>
+            <div class="banner-container">
+                <div class="sliding-text">
+                    <h1 class="display-4 mb-4"><span> de l'Afrique Centrale </span></h1>
+                </div>
+            </div>
+            <p class="lead mb-4">Une plateforme complète pour l'analyse et la visualisation des données statistiques de la sous-région de l'Afrique Centrale</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'Indicateurs_app:ind_eco' %}" class="btn btn-primary btn-lg">Explorer les Données</a>
+                <a href="{% url 'pages:about' %}" class="btn btn-outline-light btn-lg">En savoir plus</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Indicateurs Clés -->
+<section class="key-indicators">
+    <div class="container">
+        <h2 class="section-title fade-in">Indicateurs Clés</h2>
+        <div class="row g-4">
+            <strong style="font-weight: bold;">  {% for country in countries %} </strong>
+            <div class="col-md-3">
+                <div class="indicator-card p-4 text-center">
+                    <h3 class="h5 mb-3">{{ country.Countryname }}</h3>
+                    <div class="indicator-value" id="gdp-{{ country.Code }}">
+                        <!-- Les valeurs seront remplies par JavaScript -->
+                    </div>
+                    <p class="text-muted">PIB par habitant</p>
+                    <p class="text-muted">Espérance de vie </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Section Carte -->
+<section class="map-section">
+    <div class="container">
+        <h2 class="section-title fade-in">Carte Interactive de l'Afrique Centrale</h2>
+        <div id="map-container"></div>
+    </div>
+</section>
+
+<!-- Section Graphiques -->
+<section class="charts-section">
+    <div class="container">
+        <h2 class="section-title fade-in">Tendances Économiques</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="gdpChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="populationChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Fonctionnalités -->
+<section class="features-section bg-light">
+    <div class="container">
+        <h2 class="section-title fade-in">Nos Fonctionnalités</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-graph-up display-4 mb-3"></i>
+                        <h3 class="h5">Visualisation Interactive</h3>
+                        <p>Explorez les données à travers des graphiques dynamiques et des visualisations personnalisables.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-file-earmark-arrow-down display-4 mb-3"></i>
+                        <h3 class="h5">Export de Données</h3>
+                        <p>Téléchargez facilement les données au format CSV pour vos analyses personnalisées.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-file-earmark-text display-4 mb-3"></i>
+                        <h3 class="h5">Génération de Rapports</h3>
+                        <p>Créez des rapports détaillés et personnalisés en quelques clics.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Initialisation de la carte
+    document.addEventListener('DOMContentLoaded', function() {
+        // Création de la carte
+        const map = L.map('map-container').setView([7.369722, 12.354722], 4);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Animation des éléments au scroll
+        const observerCallback = (entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(observerCallback, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.fade-in').forEach(element => {
+            observer.observe(element);
+        });
+
+        
+        // Récupération des données depuis le contexte Django
+        const gdpYears = {{ gdp_years|safe }};
+        const gdpValues = {{ gdp_values|safe }};
+        const populationYears = {{ population_years|safe }};
+        const populationValues = {{ population_values|safe }};
+
+        // Configuration du graphique PIB
+        const gdpChart = new Chart(document.getElementById('gdpChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: gdpYears,
+                datasets: [{
+                    label: 'PIB par habitant (USD)',
+                    data: gdpValues,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Évolution du PIB par habitant au Cameroun'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'PIB par habitant (USD) '
+                        }
+                    }
+                }
+            }
+        });
+
+        // Configuration du graphique Population
+        const populationChart = new Chart(document.getElementById('populationChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: populationYears,
+                datasets: [{
+                    label: 'Population',
+                    data: populationValues,
+                    backgroundColor: 'rgb(54, 162, 235)'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Évolution de la population en Guinée équatoriale'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Nombre d\'habitants en Guinée équatoriale'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}
+
+
+
