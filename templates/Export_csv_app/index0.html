@@ -11,6 +11,7 @@
       .statistic { background-color: #f9f9f9; border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; }
       h1, h2 { color: #003366; }
       h1 {padding-left: 5%; padding-right: 5%;}
+      .footer { background-color: #003366; color: #ffffff; text-align: center; padding: 10px; }
       .table {padding: 10px;}
       .form-container {
           max-width: 80%;
@@ -216,8 +217,6 @@
 {% endblock %}
 
 {% block extra_js %} 
-<script src="{% static 'js/indicators.js' %}"></script>
-
 <!-- Script pour gérer la fermeture automatique des accordéons -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {

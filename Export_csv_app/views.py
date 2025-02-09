@@ -2,7 +2,10 @@ from django.shortcuts import render, redirect
 from Export_csv_app.forms import export_to_csv_Form
 from django.contrib.auth.decorators import login_required
 from Form_app.models import Country, EconomicIndicator, Indicator_List, EconomicIndicatorClass
+import plotly.express as px
+import plotly.graph_objects as go
 import numpy as np
+from plotly.io import to_image
 from math import ceil
 import pandas as pd
 import matplotlib
@@ -164,12 +167,13 @@ def export_csv(request):
         return HttpResponse("Aucune donnée à exporter", status=400)
     
     # Créer un writer CSV pour la réponse
-    output_csv = 'base.csv'
-    with open(output_csv, mode='w', newline='', encoding='utf-8') as response:
-        writer = csv.writer(response)
-        writer.writerow(data[0].keys())
-        for row in data:
-            writer.writerow(row.values())
-    
-    # Si ça ne fonctionne pas, effacer le "with"
+    writer = csv.writer(response)
+
+    # Si la liste de dictionnaires existe, on écrit les en-têtes (les clés des dictionnaires)
+    writer.writerow(data[0].keys())  # Prendre les clés du premier dictionnaire comme en-têtes
+
+    # Écrire les données ligne par ligne
+    for row in data:
+        writer.writerow(row.values())
+
     return response
