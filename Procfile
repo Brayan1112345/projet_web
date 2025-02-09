@@ -1,0 +1,1 @@
+web: gunicorn Projet_Web_2024_INDICATEURS.wsgi
