@@ -1,10 +1,7 @@
 from django.shortcuts import render, redirect
 from Form_app.models import Country, EconomicIndicator, Indicator_List, EconomicIndicatorClass
 from django.http import JsonResponse
-import plotly.express as px
-import plotly.graph_objects as go
 import numpy as np
-from plotly.io import to_image
 from math import ceil
 import pandas as pd
 import matplotlib

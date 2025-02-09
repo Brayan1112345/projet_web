@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-m_@&4h7u$7_w00$n82!i&7h8n)lr@96dh@idz7s8$#3%r-(1$i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG =True #s False
 
 ALLOWED_HOSTS = []
 
@@ -78,6 +78,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Projet_Web_2024_INDICATEURS.wsgi.application'
+
 
 
 # Database

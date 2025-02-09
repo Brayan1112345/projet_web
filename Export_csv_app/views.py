@@ -2,10 +2,7 @@ from django.shortcuts import render, redirect
 from Export_csv_app.forms import export_to_csv_Form
 from django.contrib.auth.decorators import login_required
 from Form_app.models import Country, EconomicIndicator, Indicator_List, EconomicIndicatorClass
-import plotly.express as px
-import plotly.graph_objects as go
 import numpy as np
-from plotly.io import to_image
 from math import ceil
 import pandas as pd
 import matplotlib

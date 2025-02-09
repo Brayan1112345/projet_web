@@ -156,22 +156,28 @@
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const chartData = JSON.parse('{{ chart_json|safe }}');
+        const graphData = JSON.parse('{{ graph_data|safe }}');
         
-        // Ajuster le layout pour un meilleur aspect ratio
+        // Créer les données pour le tracé
+        const trace = {
+            x: graphData.x,
+            y: graphData.y,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: graphData.indicator_name
+        };
+        
+        // Configuration du layout
         const layout = {
-            ...chartData.layout,
-            height: 600,  // Hauteur fixe minimale
-            margin: { t: 50, r: 50, b: 50, l: 50 },  // Marges ajustées
+            height: 600,
+            margin: { t: 50, r: 50, b: 50, l: 50 },
             yaxis: {
-                ...chartData.layout.yaxis,
                 title: {
-                    text: "{{ indicator.Name }}",
+                    text: graphData.indicator_name,
                     font: { size: 14 }
                 }
             },
             xaxis: {
-                ...chartData.layout.xaxis,
                 title: {
                     text: "Année",
                     font: { size: 14 }
@@ -179,11 +185,15 @@
             }
         };
 
-        Plotly.newPlot('plotly-graph', chartData.data, layout, {
+        // Options de configuration
+        const config = {
             responsive: true,
             displayModeBar: true,
             displaylogo: false
-        });
+        };
+
+        // Créer le graphique
+        Plotly.newPlot('plotly-graph', [trace], layout, config);
 
         // Gérer le redimensionnement
         window.addEventListener('resize', function() {

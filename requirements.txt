@@ -1,0 +1,12 @@
+numpy
+pandas
+matplotlib
+matplotlib.pyplot
+csv
+json
+base64
+io
+PyPDF2
+reportlab
+math
+scipy

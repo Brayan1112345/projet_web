@@ -2,10 +2,7 @@ from django.shortcuts import render, redirect
 from Report_app.forms import reportForm
 from django.contrib.auth.decorators import login_required
 from Form_app.models import Country, EconomicIndicator, Indicator_List
-import plotly.express as px
-import plotly.graph_objects as go
 import numpy as np
-from plotly.io import to_image
 import base64
 from django.template.loader import render_to_string
 from django.conf import settings
