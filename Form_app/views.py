@@ -329,7 +329,7 @@ def delete_indicator(request):
             country = request.session.get('country')
 
             year = request.session.get('year')
-            EconomicIndicator.objects.get(ID_Indicator = f'{country['Code']}, {year}').delete()
+            EconomicIndicator.objects.get(ID_Indicator = f'{country["Code"]}, {year}').delete()
 
             messages.success(request, f"Les indicateurs pour {country['Countryname']} en {year} ont été supprimés avec succès.")
             return render(request, 'Form_app/Suppréssion.html', {
