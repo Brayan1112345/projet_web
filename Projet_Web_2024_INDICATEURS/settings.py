@@ -88,10 +88,10 @@ WSGI_APPLICATION = 'Projet_Web_2024_INDICATEURS.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django',
-        'USER': 'root',
+        'NAME': 'brayan2$default',
+        'USER': 'brayan2',
         'PASSWORD': 'pucNE!3H9O]OkS5d',
-        'HOST': '127.0.0.1', 
+        'HOST': 'brayan2.mysql.pythonanywhere-services.com', 
         'PORT': 3306, 
     },
     'MYSQL': {
